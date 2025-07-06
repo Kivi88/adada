@@ -46,6 +46,11 @@ class RobloxAPI {
         return $this->makeRequest($url);
     }
     
+    public function getGroupRoles($groupId) {
+        $url = $this->base_url . $groupId . '/roles';
+        return $this->makeRequest($url);
+    }
+    
     public function setUserRank($groupId, $userId, $roleId) {
         if (empty($this->cookie)) {
             return ['success' => false, 'error' => 'Roblox cookie gerekli'];

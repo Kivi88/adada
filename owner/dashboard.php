@@ -88,14 +88,67 @@ if ($owner['group_id']) {
         </div>
         <?php endif; ?>
 
+        <!-- Quick Actions Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user-plus fa-2x text-primary mb-2"></i>
+                        <h6>Üye Davet Et</h6>
+                        <button class="btn btn-primary btn-sm" onclick="showInviteModal()">
+                            <i class="fas fa-plus"></i> Davet Et
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-chart-bar fa-2x text-success mb-2"></i>
+                        <h6>Üye İstatistikleri</h6>
+                        <button class="btn btn-success btn-sm" onclick="showStatsModal()">
+                            <i class="fas fa-chart-line"></i> Görüntüle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-ban fa-2x text-warning mb-2"></i>
+                        <h6>Banlanan Üyeler</h6>
+                        <button class="btn btn-warning btn-sm" onclick="showBannedModal()">
+                            <i class="fas fa-eye"></i> Görüntüle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-cog fa-2x text-info mb-2"></i>
+                        <h6>Grup Ayarları</h6>
+                        <button class="btn btn-info btn-sm" onclick="showSettingsModal()">
+                            <i class="fas fa-cogs"></i> Düzenle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-users"></i> Grup Üyeleri</h5>
-                        <button class="btn btn-primary btn-sm" onclick="refreshMembers()">
-                            <i class="fas fa-refresh"></i> Yenile
-                        </button>
+                        <div>
+                            <button class="btn btn-primary btn-sm" onclick="refreshMembers()">
+                                <i class="fas fa-refresh"></i> Yenile
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="exportMembers()">
+                                <i class="fas fa-download"></i> Dışa Aktar
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -134,10 +187,20 @@ if ($owner['group_id']) {
                                             </td>
                                             <td><?php echo isset($member['user']['created']) ? date('d/m/Y', strtotime($member['user']['created'])) : 'Bilinmiyor'; ?></td>
                                             <td>
-                                                <button class="btn btn-sm btn-warning" 
-                                                        onclick="showRankModal(<?php echo $member['user']['id']; ?>, '<?php echo htmlspecialchars($member['user']['username']); ?>')">
-                                                    <i class="fas fa-star"></i> Rütbe Ver
-                                                </button>
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-sm btn-warning" 
+                                                            onclick="showRankModal(<?php echo $member['user']['id']; ?>, '<?php echo htmlspecialchars($member['user']['username']); ?>')">
+                                                        <i class="fas fa-star"></i> Rütbe
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger" 
+                                                            onclick="kickMember(<?php echo $member['user']['id']; ?>, '<?php echo htmlspecialchars($member['user']['username']); ?>')">
+                                                        <i class="fas fa-user-times"></i> At
+                                                    </button>
+                                                    <button class="btn btn-sm btn-secondary" 
+                                                            onclick="banMember(<?php echo $member['user']['id']; ?>, '<?php echo htmlspecialchars($member['user']['username']); ?>')">
+                                                        <i class="fas fa-ban"></i> Banla
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -170,7 +233,6 @@ if ($owner['group_id']) {
                             <label for="roleId" class="form-label">Yeni Rütbe</label>
                             <select class="form-select" id="roleId" name="roleId" required>
                                 <option value="">Rütbe Seçin</option>
-                                <!-- Roles will be populated dynamically -->
                             </select>
                         </div>
                     </form>
@@ -178,6 +240,100 @@ if ($owner['group_id']) {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                     <button type="button" class="btn btn-primary" onclick="changeRank()">Rütbe Değiştir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div class="modal fade" id="statsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Grup İstatistikleri</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h4 class="text-primary">Toplam Üye</h4>
+                                    <h2 id="totalMembers">-</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h4 class="text-success">Aktif Üyeler</h4>
+                                    <h2 id="activeMembers">-</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h6>Rütbe Dağılımı</h6>
+                        <div id="roleDistribution"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invite Modal -->
+    <div class="modal fade" id="inviteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Üye Davet Et</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="inviteUsername" class="form-label">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" id="inviteUsername" placeholder="Roblox kullanıcı adını girin">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inviteRole" class="form-label">Başlangıç Rütbesi</label>
+                        <select class="form-select" id="inviteRole">
+                            <option value="1">Üye</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="inviteMember()">Davet Gönder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Grup Ayarları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="groupDescription" class="form-label">Grup Açıklaması</label>
+                        <textarea class="form-control" id="groupDescription" rows="4"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="publicEntry">
+                            <label class="form-check-label" for="publicEntry">
+                                Herkese açık katılım
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSettings()">Kaydet</button>
                 </div>
             </div>
         </div>
@@ -261,6 +417,72 @@ if ($owner['group_id']) {
                 console.error('Error:', error);
                 alert('İstek gönderilirken hata oluştu');
             });
+        }
+
+        function kickMember(userId, username) {
+            if (confirm(`${username} kullanıcısını gruptan atmak istediğinizden emin misiniz?`)) {
+                // Demo için şimdilik alert göster
+                alert('Üye atma özelliği yakında eklenecek');
+            }
+        }
+
+        function banMember(userId, username) {
+            if (confirm(`${username} kullanıcısını banlamak istediğinizden emin misiniz?`)) {
+                // Demo için şimdilik alert göster
+                alert('Banlama özelliği yakında eklenecek');
+            }
+        }
+
+        function showStatsModal() {
+            // Demo veriler
+            document.getElementById('totalMembers').textContent = '<?php echo $group_info ? $group_info["memberCount"] : "0"; ?>';
+            document.getElementById('activeMembers').textContent = '<?php echo count($group_members); ?>';
+            
+            const roleDistribution = document.getElementById('roleDistribution');
+            roleDistribution.innerHTML = `
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-primary" style="width: 60%">Üye (60%)</div>
+                </div>
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-warning" style="width: 30%">Moderatör (30%)</div>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" style="width: 10%">Yönetici (10%)</div>
+                </div>
+            `;
+            
+            new bootstrap.Modal(document.getElementById('statsModal')).show();
+        }
+
+        function showInviteModal() {
+            new bootstrap.Modal(document.getElementById('inviteModal')).show();
+        }
+
+        function showBannedModal() {
+            alert('Banlanan üyeler listesi yakında eklenecek');
+        }
+
+        function showSettingsModal() {
+            document.getElementById('groupDescription').value = '<?php echo htmlspecialchars($group_info["description"] ?? ""); ?>';
+            document.getElementById('publicEntry').checked = <?php echo ($group_info["publicEntryAllowed"] ?? false) ? "true" : "false"; ?>;
+            new bootstrap.Modal(document.getElementById('settingsModal')).show();
+        }
+
+        function inviteMember() {
+            const username = document.getElementById('inviteUsername').value;
+            if (!username) {
+                alert('Lütfen kullanıcı adı girin');
+                return;
+            }
+            alert('Davet özelliği yakında eklenecek');
+        }
+
+        function saveSettings() {
+            alert('Ayar kaydetme özelliği yakında eklenecek');
+        }
+
+        function exportMembers() {
+            alert('Üye listesi dışa aktarma özelliği yakında eklenecek');
         }
     </script>
 </body>
