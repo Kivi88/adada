@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_user'])) {
                             </div>
                             <div class="col-md-4">
                                 <strong>Oluşturma Tarihi:</strong><br>
-                                <?php echo date('d/m/Y', strtotime($search_results['user']['created'])); ?>
+                                <?php echo isset($search_results['user']['created']) ? date('d/m/Y', strtotime($search_results['user']['created'])) : 'Bilinmiyor'; ?>
                             </div>
                         </div>
                         

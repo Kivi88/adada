@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 session_start();
 require_once '../config/database.php';
 require_once '../auth/session.php';
@@ -29,12 +30,13 @@ if ($owner['group_id']) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grup Sahibi Dashboard - Roblox Grup Yönetimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">
                 <i class="fas fa-users"></i> Roblox Grup Yönetimi
@@ -77,7 +79,7 @@ if ($owner['group_id']) {
                             </div>
                             <div class="col-md-3">
                                 <strong>Açıklama:</strong><br>
-                                <?php echo htmlspecialchars(substr($group_info['description'], 0, 100)); ?>...
+                                <?php echo htmlspecialchars(substr($group_info['description'] ?? 'Açıklama yok', 0, 100)); ?>...
                             </div>
                         </div>
                     </div>
@@ -130,7 +132,7 @@ if ($owner['group_id']) {
                                                     <?php echo htmlspecialchars($member['role']['name']); ?>
                                                 </span>
                                             </td>
-                                            <td><?php echo date('d/m/Y', strtotime($member['user']['created'])); ?></td>
+                                            <td><?php echo isset($member['user']['created']) ? date('d/m/Y', strtotime($member['user']['created'])) : 'Bilinmiyor'; ?></td>
                                             <td>
                                                 <button class="btn btn-sm btn-warning" 
                                                         onclick="showRankModal(<?php echo $member['user']['id']; ?>, '<?php echo htmlspecialchars($member['user']['username']); ?>')">

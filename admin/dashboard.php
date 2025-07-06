@@ -26,7 +26,7 @@ $activities = $stmt->fetchAll();
     <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.php">
                 <i class="fas fa-users"></i> Roblox Grup Yönetimi
