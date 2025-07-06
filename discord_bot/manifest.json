@@ -1,0 +1,33 @@
+
+{
+  "display_information": {
+    "name": "Roblox Grup Yönetimi",
+    "description": "Roblox grupları için kapsamlı yönetim botu",
+    "background_color": "#0099ff"
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "Roblox Grup Bot",
+      "always_online": true
+    }
+  },
+  "oauth_config": {
+    "scopes": [
+      "bot"
+    ],
+    "bot_permissions": {
+      "send_messages": true,
+      "embed_links": true,
+      "read_message_history": true,
+      "use_application_commands": true
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "request_url": "",
+      "bot_events": [
+        "message.channels"
+      ]
+    }
+  }
+}
