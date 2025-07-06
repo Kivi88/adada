@@ -83,9 +83,23 @@ class RobloxAPI {
             return false;
         }
         
-        // For demo purposes, return true to simulate success
-        // In real implementation, this would call Roblox API
-        return true;
+        $url = "https://groups.roblox.com/v1/groups/$groupId";
+        $data = json_encode(['name' => $newName]);
+        
+        $options = [
+            'http' => [
+                'header' => "Content-Type: application/json\r\n" .
+                           "Cookie: .ROBLOSECURITY=" . $this->cookie . "\r\n" .
+                           "X-CSRF-TOKEN: " . $this->getCSRFToken() . "\r\n",
+                'method' => 'PATCH',
+                'content' => $data
+            ]
+        ];
+        
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        
+        return $result !== FALSE;
     }
     
     public function updateGroupSettings($groupId, $settings) {
@@ -103,9 +117,24 @@ class RobloxAPI {
             return ['success' => false, 'error' => 'Roblox cookie gerekli'];
         }
         
-        // For demo purposes, return success
-        // In real implementation, this would call Roblox API
-        return ['success' => true];
+        $url = "https://groups.roblox.com/v1/groups/$groupId/users/$userId";
+        
+        $options = [
+            'http' => [
+                'header' => "Cookie: .ROBLOSECURITY=" . $this->cookie . "\r\n" .
+                           "X-CSRF-TOKEN: " . $this->getCSRFToken() . "\r\n",
+                'method' => 'DELETE'
+            ]
+        ];
+        
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        
+        if ($result !== FALSE) {
+            return ['success' => true, 'message' => 'Üye başarıyla atıldı'];
+        } else {
+            return ['success' => false, 'error' => 'Üye atılamadı'];
+        }
     }
     
     public function banMember($groupId, $userId) {
@@ -113,9 +142,24 @@ class RobloxAPI {
             return ['success' => false, 'error' => 'Roblox cookie gerekli'];
         }
         
-        // For demo purposes, return success
-        // In real implementation, this would call Roblox API
-        return ['success' => true];
+        $url = "https://groups.roblox.com/v1/groups/$groupId/users/$userId/ban";
+        
+        $options = [
+            'http' => [
+                'header' => "Cookie: .ROBLOSECURITY=" . $this->cookie . "\r\n" .
+                           "X-CSRF-TOKEN: " . $this->getCSRFToken() . "\r\n",
+                'method' => 'POST'
+            ]
+        ];
+        
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        
+        if ($result !== FALSE) {
+            return ['success' => true, 'message' => 'Üye başarıyla banlandı'];
+        } else {
+            return ['success' => false, 'error' => 'Üye banlanamadı'];
+        }
     }
     
     public function inviteMember($groupId, $username) {
@@ -149,6 +193,34 @@ class RobloxAPI {
         }
         
         return json_decode($result, true);
+    }
+    
+    private function getCSRFToken() {
+        if (empty($this->cookie)) {
+            return '';
+        }
+        
+        $url = 'https://auth.roblox.com/v2/logout';
+        $options = [
+            'http' => [
+                'header' => "Cookie: .ROBLOSECURITY=" . $this->cookie . "\r\n",
+                'method' => 'POST',
+                'ignore_errors' => true
+            ]
+        ];
+        
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        
+        if (isset($http_response_header)) {
+            foreach ($http_response_header as $header) {
+                if (strpos($header, 'x-csrf-token:') !== false) {
+                    return trim(substr($header, 14));
+                }
+            }
+        }
+        
+        return '';
     }
 }
 ?>
