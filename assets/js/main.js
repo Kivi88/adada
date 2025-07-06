@@ -44,7 +44,13 @@ async function handleGroupLookup(event) {
 
     try {
         const response = await fetch(`api/group_lookup.php?groupId=${groupId}`);
-        const data = await response.json();
+        const text = await response.text();
+        
+        // Clean the response from PHP warnings
+        const jsonStart = text.indexOf('{');
+        const cleanText = jsonStart !== -1 ? text.substring(jsonStart) : text;
+        
+        const data = JSON.parse(cleanText);
 
         if (data.success) {
             displayGroupResults(data, resultsDiv);
@@ -55,7 +61,7 @@ async function handleGroupLookup(event) {
         }
     } catch (error) {
         console.error('Group lookup error:', error);
-        showError(resultsDiv, 'Bir hata oluştu. Lütfen tekrar deneyin.');
+        showError(resultsDiv, 'Grup verisi alınırken hata oluştu. Tekrar deneyin.');
     }
 }
 
@@ -75,7 +81,13 @@ async function handlePlayerSearch(event) {
 
     try {
         const response = await fetch(`api/player_search.php?username=${encodeURIComponent(playerName)}`);
-        const data = await response.json();
+        const text = await response.text();
+        
+        // Clean the response from PHP warnings
+        const jsonStart = text.indexOf('{');
+        const cleanText = jsonStart !== -1 ? text.substring(jsonStart) : text;
+        
+        const data = JSON.parse(cleanText);
 
         if (data.success) {
             displayPlayerResults(data, resultsDiv);
@@ -85,7 +97,7 @@ async function handlePlayerSearch(event) {
         }
     } catch (error) {
         console.error('Player search error:', error);
-        showError(resultsDiv, 'Bir hata oluştu. Lütfen tekrar deneyin.');
+        showError(resultsDiv, 'Oyuncu verisi alınırken hata oluştu. Tekrar deneyin.');
     }
 }
 

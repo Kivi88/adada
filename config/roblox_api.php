@@ -76,12 +76,18 @@ class RobloxAPI {
     private function makeRequest($url) {
         $options = [
             'http' => [
-                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n"
+                'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\r\n",
+                'timeout' => 10,
+                'method' => 'GET'
             ]
         ];
         
         $context = stream_context_create($options);
+        
+        // Set error handling
+        $old_error_handler = set_error_handler(function() {});
         $result = file_get_contents($url, false, $context);
+        restore_error_handler();
         
         if ($result === FALSE) {
             return null;

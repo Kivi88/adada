@@ -55,7 +55,7 @@ require_once 'auth/session.php';
                         <form id="groupLookupForm">
                             <div class="mb-3">
                                 <label for="groupId" class="form-label">Grup ID</label>
-                                <input type="number" class="form-control" id="groupId" required>
+                                <input type="number" class="form-control" id="groupId" placeholder="Grup ID girin (Demo: 123456)" required>
                             </div>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-search"></i> Grup Ara
@@ -76,7 +76,7 @@ require_once 'auth/session.php';
                         <form id="playerSearchForm">
                             <div class="mb-3">
                                 <label for="playerName" class="form-label">Oyuncu Adı</label>
-                                <input type="text" class="form-control" id="playerName" required>
+                                <input type="text" class="form-control" id="playerName" placeholder="Oyuncu adı girin (Demo: DemoKullanici)" required>
                             </div>
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-search"></i> Oyuncu Ara
