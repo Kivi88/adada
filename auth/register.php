@@ -109,11 +109,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="roblox_cookie" class="form-label">Roblox Cookie (.ROBLOSECURITY)</label>
                                 <textarea class="form-control" id="roblox_cookie" name="roblox_cookie" rows="3" 
                                           placeholder="_|WARNING:-DO-NOT-SHARE-THIS..."></textarea>
-                                <div class="form-text">
-                                    <strong>Cookie Nasıl Alınır:</strong><br>
-                                    1. Roblox.com'da giriş yapın<br>
-                                    2. F12 → Application → Cookies → roblox.com<br>
-                                    3. .ROBLOSECURITY değerini kopyalayın
+                                
+                                <!-- Cookie Alma Rehberi -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <button class="btn btn-link text-decoration-none p-0" type="button" 
+                                                    data-bs-toggle="collapse" data-bs-target="#cookieGuide">
+                                                <i class="fas fa-question-circle"></i> Cookie Nasıl Alınır? (Adım Adım Rehber)
+                                            </button>
+                                        </h6>
+                                    </div>
+                                    <div class="collapse" id="cookieGuide">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6><i class="fas fa-step-forward"></i> Adım 1: Roblox'a Giriş</h6>
+                                                    <ul class="list-unstyled">
+                                                        <li>• <a href="https://www.roblox.com" target="_blank">Roblox.com</a>'a gidin</li>
+                                                        <li>• Hesabınıza giriş yapın</li>
+                                                        <li>• Grup sahibi olduğunuz hesapta olduğunuzdan emin olun</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h6><i class="fas fa-step-forward"></i> Adım 2: Developer Tools</h6>
+                                                    <ul class="list-unstyled">
+                                                        <li>• <kbd>F12</kbd> tuşuna basın</li>
+                                                        <li>• Ya da <kbd>Ctrl + Shift + I</kbd></li>
+                                                        <li>• Chrome: Sağ tık → "İncele"</li>
+                                                        <li>• Firefox: Sağ tık → "Öğeyi İncele"</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mt-3">
+                                                <div class="col-md-6">
+                                                    <h6><i class="fas fa-step-forward"></i> Adım 3: Cookies Sekmesi</h6>
+                                                    <ul class="list-unstyled">
+                                                        <li>• <strong>Application</strong> sekmesine tıklayın</li>
+                                                        <li>• Sol panelde <strong>Storage</strong> bölümünü bulun</li>
+                                                        <li>• <strong>Cookies</strong> yazısına tıklayın</li>
+                                                        <li>• <strong>https://www.roblox.com</strong> seçin</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h6><i class="fas fa-step-forward"></i> Adım 4: Cookie Kopyalama</h6>
+                                                    <ul class="list-unstyled">
+                                                        <li>• <strong>.ROBLOSECURITY</strong> adlı cookie'yi bulun</li>
+                                                        <li>• "Value" sütunundaki değeri seçin</li>
+                                                        <li>• <kbd>Ctrl + C</kbd> ile kopyalayın</li>
+                                                        <li>• Yukarıdaki alana yapıştırın</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="alert alert-info">
+                                                <h6><i class="fas fa-info-circle"></i> Önemli Notlar:</h6>
+                                                <ul class="mb-0">
+                                                    <li>Cookie <code>_|WARNING:-DO-NOT-SHARE-THIS</code> ile başlar</li>
+                                                    <li>Çok uzun bir metin (300+ karakter)</li>
+                                                    <li>Harf, rakam, nokta ve tire içerir</li>
+                                                    <li>Kopyalarken başını/sonunu kaçırmayın</li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="alert alert-warning">
+                                                <h6><i class="fas fa-exclamation-triangle"></i> Güvenlik Uyarısı:</h6>
+                                                <p class="mb-0">Bu cookie'yi kimseyle paylaşmayın! Bu bilgiyle hesabınıza erişim sağlanabilir.</p>
+                                            </div>
+                                            
+                                            <div class="text-center">
+                                                <small class="text-muted">
+                                                    Sorun yaşıyorsanız: <br>
+                                                    Chrome → F12 → Application → Storage → Cookies → roblox.com → .ROBLOSECURITY
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
