@@ -106,6 +106,9 @@ This is a web-based Roblox Group Management System built with PHP and vanilla Ja
 ## Changelog
 
 - July 06, 2025. Initial setup
+- July 06, 2025. API düzeltmeleri tamamlandı - grup/oyuncu arama çalışıyor
+- July 06, 2025. Grup sahibi paneli geliştirildi - rütbe yönetimi, istatistikler eklendi
+- July 06, 2025. Proje TAR.GZ formatında arşivlendi (21KB) - Plesk'e hazır
 
 ## User Preferences
 
