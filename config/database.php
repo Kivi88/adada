@@ -1,10 +1,10 @@
 <?php
 // Use PostgreSQL database from Replit
-$host = $_ENV['PGHOST'] ?? 'ep-snowy-poetry-aebkllti.c-2.us-east-2.aws.neon.tech';
-$dbname = $_ENV['PGDATABASE'] ?? 'neondb';
-$username = $_ENV['PGUSER'] ?? 'neondb_owner';
-$password = $_ENV['PGPASSWORD'] ?? 'npg_vZT7dDtRSU6k';
-$port = $_ENV['PGPORT'] ?? '5432';
+$host = $_ENV['PGHOST'];
+$dbname = $_ENV['PGDATABASE'];
+$username = $_ENV['PGUSER'];
+$password = $_ENV['PGPASSWORD'];
+$port = $_ENV['PGPORT'];
 
 try {
     $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
