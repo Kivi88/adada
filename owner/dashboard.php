@@ -12,7 +12,7 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $owner = $stmt->fetch();
 
-$roblox_api = new RobloxAPI();
+$roblox_api = new RobloxAPI($owner['roblox_cookie']);
 $group_info = null;
 $group_members = [];
 

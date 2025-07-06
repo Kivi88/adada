@@ -41,9 +41,12 @@ function updateGroupName($input, $pdo) {
         return;
     }
     
-    // In real implementation, this would call Roblox API
-    // For now, just simulate success
-    $roblox_api = new RobloxAPI();
+    // Get user's Roblox cookie
+    $stmt = $pdo->prepare("SELECT roblox_cookie FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    
+    $roblox_api = new RobloxAPI($user['roblox_cookie']);
     $success = $roblox_api->updateGroupName($groupId, $newName);
     
     if ($success) {

@@ -4,8 +4,8 @@ class RobloxAPI {
     private $users_url = 'https://users.roblox.com/v1/users/';
     private $cookie;
     
-    public function __construct() {
-        $this->cookie = $_ENV['ROBLOX_COOKIE'] ?? '';
+    public function __construct($userCookie = null) {
+        $this->cookie = $userCookie ?? $_ENV['ROBLOX_COOKIE'] ?? '';
     }
     
     public function getGroupInfo($groupId) {
