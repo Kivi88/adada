@@ -99,8 +99,8 @@ $activities = $stmt->fetchAll();
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-crown"></i> Grup Sahipleri</h5>
-                        <a href="add_owner.php" class="btn btn-success btn-sm">
-                            <i class="fas fa-plus"></i> Yeni Grup Sahibi
+                        <a href="add_group_owner.php" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus"></i> Grup Sahibi Ekle
                         </a>
                     </div>
                     <div class="card-body">

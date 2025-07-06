@@ -38,9 +38,6 @@ require_once 'auth/session.php';
                     <a class="nav-link" href="auth/login.php">
                         <i class="fas fa-sign-in-alt"></i> Giriş
                     </a>
-                    <a class="nav-link" href="auth/register.php">
-                        <i class="fas fa-user-plus"></i> Kayıt Ol
-                    </a>
                 <?php endif; ?>
             </div>
         </div>

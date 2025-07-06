@@ -115,6 +115,10 @@ This is a web-based Roblox Group Management System built with PHP and vanilla Ja
   - Yardımcı yönetim sistemi (izinlerle)
   - Rütbe yönetimi
   - Helper tablosu veritabanına eklendi
+- July 06, 2025. Kayıt sistemi kaldırıldı - grup sahipleri admin tarafından manuel ekleniyor
+  - Admin panel'de "Grup Sahibi Ekle" sayfası eklendi
+  - Her grup sahibi kendi cookie'si ile sisteme ekleniyor
+  - Multi-user sistem: her kullanıcı sadece kendi gruplarını yönetiyor
 
 ## User Preferences
 
