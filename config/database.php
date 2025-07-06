@@ -15,6 +15,9 @@ try {
     die("Veritabanı bağlantı hatası: " . $e->getMessage());
 }
 
+// Make $pdo available globally
+$GLOBALS['pdo'] = $pdo;
+
 // Create tables if they don't exist
 try {
     $pdo->exec("

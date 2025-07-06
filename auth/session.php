@@ -28,9 +28,25 @@ function requireAdmin() {
 
 function requireOwner() {
     requireLogin();
-    if (!isOwner()) {
+    if (!isOwner() && !isHelper()) {
         header('Location: ../index.php');
         exit();
     }
+}
+
+function isHelper() {
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'helper';
+}
+
+function hasPermission($permission) {
+    if (isAdmin() || isOwner()) {
+        return true;
+    }
+    
+    if (isHelper() && isset($_SESSION['permissions'])) {
+        return in_array($permission, $_SESSION['permissions']);
+    }
+    
+    return false;
 }
 ?>

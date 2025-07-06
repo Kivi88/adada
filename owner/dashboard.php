@@ -60,14 +60,17 @@ if ($owner['group_id']) {
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5><i class="fas fa-info-circle"></i> Grup Bilgileri</h5>
+                        <button class="btn btn-primary btn-sm" onclick="showEditGroupModal()">
+                            <i class="fas fa-edit"></i> Grup Adını Düzenle
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
                                 <strong>Grup Adı:</strong><br>
-                                <?php echo htmlspecialchars($group_info['name']); ?>
+                                <span id="current-group-name"><?php echo htmlspecialchars($group_info['name']); ?></span>
                             </div>
                             <div class="col-md-3">
                                 <strong>Üye Sayısı:</strong><br>
@@ -126,11 +129,43 @@ if ($owner['group_id']) {
             <div class="col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
-                        <i class="fas fa-cog fa-2x text-info mb-2"></i>
-                        <h6>Grup Ayarları</h6>
-                        <button class="btn btn-info btn-sm" onclick="showSettingsModal()">
-                            <i class="fas fa-cogs"></i> Düzenle
+                        <i class="fas fa-user-shield fa-2x text-info mb-2"></i>
+                        <h6>Yardımcı Yönetimi</h6>
+                        <button class="btn btn-info btn-sm" onclick="showHelpersModal()">
+                            <i class="fas fa-users-cog"></i> Yönet
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Helper Management Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-user-shield"></i> Grup Yardımcıları</h5>
+                        <button class="btn btn-success btn-sm" onclick="showAddHelperModal()">
+                            <i class="fas fa-plus"></i> Yardımcı Ekle
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="helpersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Kullanıcı Adı</th>
+                                        <th>Yetkiler</th>
+                                        <th>Eklenme Tarihi</th>
+                                        <th>Durum</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="helpersTableBody">
+                                    <!-- Helper data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -339,6 +374,146 @@ if ($owner['group_id']) {
         </div>
     </div>
 
+    <!-- Edit Group Name Modal -->
+    <div class="modal fade" id="editGroupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Grup Adını Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editGroupForm">
+                        <div class="mb-3">
+                            <label for="newGroupName" class="form-label">Yeni Grup Adı</label>
+                            <input type="text" class="form-control" id="newGroupName" maxlength="50" required>
+                            <div class="form-text">Maximum 50 karakter</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="updateGroupName()">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Helper Modal -->
+    <div class="modal fade" id="addHelperModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yardımcı Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addHelperForm">
+                        <div class="mb-3">
+                            <label for="helperUsername" class="form-label">Kullanıcı Adı</label>
+                            <input type="text" class="form-control" id="helperUsername" placeholder="Kullanıcı adını girin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Yetkiler</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="perm_manage_ranks" value="manage_ranks">
+                                <label class="form-check-label" for="perm_manage_ranks">
+                                    Rütbe Yönetimi
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="perm_edit_group_name" value="edit_group_name">
+                                <label class="form-check-label" for="perm_edit_group_name">
+                                    Grup Adını Değiştirme
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="perm_kick_members" value="kick_members">
+                                <label class="form-check-label" for="perm_kick_members">
+                                    Üye Atma
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="perm_invite_members" value="invite_members">
+                                <label class="form-check-label" for="perm_invite_members">
+                                    Üye Davet Etme
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="perm_ban_members" value="ban_members">
+                                <label class="form-check-label" for="perm_ban_members">
+                                    Üye Banlama
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="addHelper()">Yardımcı Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Helper Modal -->
+    <div class="modal fade" id="editHelperModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yardımcı Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editHelperForm">
+                        <input type="hidden" id="edit_helper_id">
+                        <div class="mb-3">
+                            <label for="edit_helper_username" class="form-label">Kullanıcı Adı</label>
+                            <input type="text" class="form-control" id="edit_helper_username" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Yetkiler</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_perm_manage_ranks" value="manage_ranks">
+                                <label class="form-check-label" for="edit_perm_manage_ranks">
+                                    Rütbe Yönetimi
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_perm_edit_group_name" value="edit_group_name">
+                                <label class="form-check-label" for="edit_perm_edit_group_name">
+                                    Grup Adını Değiştirme
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_perm_kick_members" value="kick_members">
+                                <label class="form-check-label" for="edit_perm_kick_members">
+                                    Üye Atma
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_perm_invite_members" value="invite_members">
+                                <label class="form-check-label" for="edit_perm_invite_members">
+                                    Üye Davet Etme
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_perm_ban_members" value="ban_members">
+                                <label class="form-check-label" for="edit_perm_ban_members">
+                                    Üye Banlama
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="updateHelper()">Güncelle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const groupId = <?php echo json_encode($owner['group_id']); ?>;
@@ -484,6 +659,239 @@ if ($owner['group_id']) {
         function exportMembers() {
             alert('Üye listesi dışa aktarma özelliği yakında eklenecek');
         }
+
+        // Group name editing functions
+        function showEditGroupModal() {
+            document.getElementById('newGroupName').value = document.getElementById('current-group-name').textContent;
+            new bootstrap.Modal(document.getElementById('editGroupModal')).show();
+        }
+
+        function updateGroupName() {
+            const newName = document.getElementById('newGroupName').value.trim();
+            if (!newName || newName.length < 3) {
+                alert('Grup adı en az 3 karakter olmalıdır');
+                return;
+            }
+            
+            fetch('../api/group_management.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'update_group_name',
+                    groupId: groupId,
+                    newName: newName
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('current-group-name').textContent = newName;
+                    bootstrap.Modal.getInstance(document.getElementById('editGroupModal')).hide();
+                    alert('Grup adı başarıyla güncellendi');
+                } else {
+                    alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('İstek gönderilirken hata oluştu');
+            });
+        }
+
+        // Helper management functions
+        function showHelpersModal() {
+            loadHelpers();
+            new bootstrap.Modal(document.getElementById('helpersModal')).show();
+        }
+
+        function showAddHelperModal() {
+            new bootstrap.Modal(document.getElementById('addHelperModal')).show();
+        }
+
+        function addHelper() {
+            const username = document.getElementById('helperUsername').value.trim();
+            if (!username) {
+                alert('Lütfen kullanıcı adı girin');
+                return;
+            }
+
+            const permissions = [];
+            document.querySelectorAll('#addHelperForm input[type="checkbox"]:checked').forEach(checkbox => {
+                permissions.push(checkbox.value);
+            });
+
+            if (permissions.length === 0) {
+                alert('Lütfen en az bir yetki seçin');
+                return;
+            }
+
+            fetch('../api/helper_management.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'add_helper',
+                    groupId: groupId,
+                    username: username,
+                    permissions: permissions
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('addHelperModal')).hide();
+                    loadHelpers();
+                    alert('Yardımcı başarıyla eklendi');
+                    document.getElementById('addHelperForm').reset();
+                } else {
+                    alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('İstek gönderilirken hata oluştu');
+            });
+        }
+
+        function loadHelpers() {
+            fetch('../api/helper_management.php?action=get_helpers&groupId=' + groupId)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('helpersTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (data.success && data.helpers) {
+                        data.helpers.forEach(helper => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${helper.username}</td>
+                                <td>
+                                    ${helper.permissions.map(perm => `<span class="badge bg-info me-1">${getPermissionName(perm)}</span>`).join('')}
+                                </td>
+                                <td>${new Date(helper.created_at).toLocaleDateString('tr-TR')}</td>
+                                <td>
+                                    <span class="badge bg-success">Aktif</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning" onclick="editHelper(${helper.id}, '${helper.username}', ${JSON.stringify(helper.permissions).replace(/"/g, '&quot;')})">
+                                        <i class="fas fa-edit"></i> Düzenle
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="removeHelper(${helper.id}, '${helper.username}')">
+                                        <i class="fas fa-trash"></i> Kaldır
+                                    </button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Henüz yardımcı eklenmemiş</td></tr>';
+                    }
+                });
+        }
+
+        function editHelper(id, username, permissions) {
+            document.getElementById('edit_helper_id').value = id;
+            document.getElementById('edit_helper_username').value = username;
+            
+            // Reset all checkboxes
+            document.querySelectorAll('#editHelperForm input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Check current permissions
+            permissions.forEach(perm => {
+                const checkbox = document.getElementById('edit_perm_' + perm);
+                if (checkbox) checkbox.checked = true;
+            });
+            
+            new bootstrap.Modal(document.getElementById('editHelperModal')).show();
+        }
+
+        function updateHelper() {
+            const id = document.getElementById('edit_helper_id').value;
+            const permissions = [];
+            document.querySelectorAll('#editHelperForm input[type="checkbox"]:checked').forEach(checkbox => {
+                permissions.push(checkbox.value);
+            });
+
+            if (permissions.length === 0) {
+                alert('Lütfen en az bir yetki seçin');
+                return;
+            }
+
+            fetch('../api/helper_management.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'update_helper',
+                    id: id,
+                    permissions: permissions
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('editHelperModal')).hide();
+                    loadHelpers();
+                    alert('Yardımcı yetkiler başarıyla güncellendi');
+                } else {
+                    alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('İstek gönderilirken hata oluştu');
+            });
+        }
+
+        function removeHelper(id, username) {
+            if (confirm(`${username} yardımcısını kaldırmak istediğinizden emin misiniz?`)) {
+                fetch('../api/helper_management.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'remove_helper',
+                        id: id
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadHelpers();
+                        alert('Yardımcı başarıyla kaldırıldı');
+                    } else {
+                        alert('Hata: ' + (data.error || 'Bilinmeyen hata'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('İstek gönderilirken hata oluştu');
+                });
+            }
+        }
+
+        function getPermissionName(perm) {
+            const permissionNames = {
+                'manage_ranks': 'Rütbe Yönetimi',
+                'edit_group_name': 'Grup Adı Düzenleme',
+                'kick_members': 'Üye Atma',
+                'invite_members': 'Üye Davet',
+                'ban_members': 'Üye Banlama'
+            };
+            return permissionNames[perm] || perm;
+        }
+
+        // Load helpers on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHelpers();
+        });
     </script>
 </body>
 </html>

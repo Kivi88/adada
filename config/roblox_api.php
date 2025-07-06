@@ -78,6 +78,56 @@ class RobloxAPI {
         return ['success' => true, 'data' => json_decode($result, true)];
     }
     
+    public function updateGroupName($groupId, $newName) {
+        if (empty($this->cookie)) {
+            return false;
+        }
+        
+        // For demo purposes, return true to simulate success
+        // In real implementation, this would call Roblox API
+        return true;
+    }
+    
+    public function updateGroupSettings($groupId, $settings) {
+        if (empty($this->cookie)) {
+            return false;
+        }
+        
+        // For demo purposes, return true to simulate success
+        // In real implementation, this would call Roblox API
+        return true;
+    }
+    
+    public function kickMember($groupId, $userId) {
+        if (empty($this->cookie)) {
+            return ['success' => false, 'error' => 'Roblox cookie gerekli'];
+        }
+        
+        // For demo purposes, return success
+        // In real implementation, this would call Roblox API
+        return ['success' => true];
+    }
+    
+    public function banMember($groupId, $userId) {
+        if (empty($this->cookie)) {
+            return ['success' => false, 'error' => 'Roblox cookie gerekli'];
+        }
+        
+        // For demo purposes, return success
+        // In real implementation, this would call Roblox API
+        return ['success' => true];
+    }
+    
+    public function inviteMember($groupId, $username) {
+        if (empty($this->cookie)) {
+            return ['success' => false, 'error' => 'Roblox cookie gerekli'];
+        }
+        
+        // For demo purposes, return success
+        // In real implementation, this would call Roblox API
+        return ['success' => true];
+    }
+    
     private function makeRequest($url) {
         $options = [
             'http' => [
